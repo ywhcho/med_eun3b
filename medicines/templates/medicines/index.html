@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}의약정보 - 의약정보 관리 시스템{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1>의약정보 검색</h1>
+    <p class="lead">아래 방법 중 하나를 선택하여 의약품을 검색하세요</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title text-primary">
+                    <i class="bi bi-capsule"></i> 성분별 검색
+                </h4>
+                <p class="card-text">약품의 성분명으로 검색합니다.</p>
+                <hr>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    {% for ingredient in ingredients %}
+                        <a href="{% url 'medicines:by_ingredient' %}?ingredient={{ ingredient }}" class="d-block mb-2">
+                            {{ ingredient }}
+                        </a>
+                    {% empty %}
+                        <p class="text-muted">등록된 성분이 없습니다.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title text-success">
+                    <i class="bi bi-building"></i> 회사별 검색
+                </h4>
+                <p class="card-text">제약회사명으로 검색합니다.</p>
+                <hr>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    {% for company in companies %}
+                        <a href="{% url 'medicines:by_company' %}?company={{ company }}" class="d-block mb-2">
+                            {{ company }}
+                        </a>
+                    {% empty %}
+                        <p class="text-muted">등록된 회사가 없습니다.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h4 class="card-title text-warning">
+                    <i class="bi bi-heart-pulse"></i> 효능별 검색
+                </h4>
+                <p class="card-text">약품의 효능으로 검색합니다.</p>
+                <hr>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    {% for effect in effect_keywords %}
+                        <a href="{% url 'medicines:by_effect' %}?effect={{ effect }}" class="d-block mb-2">
+                            {{ effect }}
+                        </a>
+                    {% empty %}
+                        <p class="text-muted">등록된 효능이 없습니다.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not ingredients and not companies and not effect_keywords %}
+    <div class="alert alert-info text-center">
+        <h5>등록된 의약품이 없습니다.</h5>
+        <p>관리자 페이지에서 의약품을 등록해주세요.</p>
+    </div>
+{% endif %}
+{% endblock %}

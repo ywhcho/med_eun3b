@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}회원가입 - 의약정보 관리 시스템{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>회원가입</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <p>{{ field.label }}: {{ error }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">사용자명</label>
+                        {{ form.username }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">이메일</label>
+                        {{ form.email }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">비밀번호</label>
+                        {{ form.password1 }}
+                        <small class="form-text text-muted">
+                            비밀번호는 최소 8자 이상이어야 하며, 숫자만으로 구성될 수 없습니다.
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">비밀번호 확인</label>
+                        {{ form.password2 }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">회원가입</button>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                이미 계정이 있으신가요? <a href="{% url 'accounts:login' %}">로그인</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

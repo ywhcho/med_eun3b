@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}검색 결과 - 의약정보{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2>{{ search_type }}별 검색 결과</h2>
+    {% if search_value %}
+        <p class="lead">검색어: <strong>{{ search_value }}</strong></p>
+    {% endif %}
+    <a href="{% url 'medicines:index' %}" class="btn btn-secondary">다시 검색</a>
+</div>
+
+<div class="row">
+    {% for medicine in medicines %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'medicines:detail' medicine.pk %}">{{ medicine.약품명 }}</a>
+                    </h5>
+                    <p class="card-text">
+                        <strong>성분명:</strong> {{ medicine.성분명 }}<br>
+                        <strong>회사명:</strong> {{ medicine.회사명 }}<br>
+                        <strong>용량:</strong> {{ medicine.용량 }}
+                    </p>
+                    <p class="card-text text-truncate">
+                        <strong>효능:</strong> {{ medicine.효능|truncatewords:20 }}
+                    </p>
+                    <a href="{% url 'medicines:detail' medicine.pk %}" class="btn btn-primary btn-sm">상세보기</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning">
+                검색 결과가 없습니다.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

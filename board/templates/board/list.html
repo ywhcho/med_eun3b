@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}게시판 - 의약정보 관리 시스템{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>게시판</h2>
+    {% if user.is_authenticated %}
+        <a href="{% url 'board:create' %}" class="btn btn-primary">글쓰기</a>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 10%">번호</th>
+                        <th style="width: 50%">제목</th>
+                        <th style="width: 20%">작성자</th>
+                        <th style="width: 20%">작성일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in page_obj %}
+                        <tr onclick="window.location='{% url 'board:detail' post.pk %}'" style="cursor: pointer;">
+                            <td>{{ post.pk }}</td>
+                            <td>{{ post.title }}</td>
+                            <td>{{ post.author.username }}</td>
+                            <td>{{ post.created_at|date:"Y-m-d H:i" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">게시글이 없습니다.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">처음</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">이전</a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">다음</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">마지막</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</div>
+
+{% if not user.is_authenticated %}
+    <div class="alert alert-info mt-3">
+        게시글을 작성하려면 <a href="{% url 'accounts:login' %}?next={{ request.path }}">로그인</a>이 필요합니다.
+    </div>
+{% endif %}
+{% endblock %}
